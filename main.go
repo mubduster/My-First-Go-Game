@@ -1,8 +1,9 @@
 package main
 
 import (
-	rl "github.com/gen2brain/raylib-go/raylib"
 	"fmt"
+
+	rl "github.com/gen2brain/raylib-go/raylib"
 )
 
 var speedX float32 = 0
@@ -15,9 +16,12 @@ var G uint8 = 0
 var B uint8 = 0
 var wallX bool
 var wallY bool
+var gravity float32 = 0.0
+var grav bool = true
 
 func main(){
-	rl.InitWindow(1600, 1020, "Basic Window")
+	rl.SetConfigFlags(rl.FlagWindowResizable | rl.FlagWindowMaximized)
+	rl.InitWindow(0, 0, "Basic Window")
 
 	screenWidth, screenHeight := float32(rl.GetScreenWidth()), float32(rl.GetScreenHeight())
 
@@ -29,8 +33,8 @@ func main(){
 
 	halfScreenWidth, halfScreenHeight := int32(screenWidth/2), int32(screenHeight/2)
 	
-	x := float32(halfScreenWidth - 200)
-	y := float32(halfScreenHeight - 200)
+	x := float32(screenWidth - 200)
+	y := float32(screenHeight - 200)
 	
 	for !rl.WindowShouldClose() {
 		
@@ -44,12 +48,13 @@ func main(){
 			}
 		}
 		if !rl.IsKeyDown(rl.KeyUp) && !rl.IsKeyDown(rl.KeyDown) {
-			if speedY > 0 {
+			if speedY > 0 && !grav{
 				speedY -= 1
 			}else if speedY < 0 {
 				speedY += 1
 			}
 		}
+	
 		if rl.IsKeyDown(rl.KeyUp) && y > 0{
 			speedY -= 1
 		}
@@ -79,7 +84,25 @@ func main(){
 			y = 0
 			speedY = speedY * -1
 		}
-		
+
+		if y+200 <= screenHeight && int32(speedY) >= -1{
+			grav = true
+		}else {
+			grav = false
+		}
+		if rl.IsKeyDown(rl.KeyUp){
+			grav = false
+		}
+
+		if !rl.IsKeyDown(rl.KeyUp) && gravity < 2.0 && grav {
+			gravity += 0.1
+			speedY += gravity
+		}else if gravity > 2.9 && grav{
+			speedY += gravity
+		}else if !grav{
+			gravity = 0.0
+		}
+
 		x += speedX
 		y += speedY
 		
@@ -98,7 +121,7 @@ func main(){
 		rl.DrawText("Bouncy ractnagle", int32(x)+15, int32(y+80), 30, rl.ColorFromHSV(hueShift/2,1.0,1.0))
 		rl.DrawText(fmt.Sprintf("Screen Width: %0.1f, Screen Height: %0.1f. halfScreenWidth: %0.1f, halfScreenHeight: %0.1f", screenWidth, screenHeight, float32(halfScreenWidth), float32(halfScreenHeight)), 10 , 40, 30, rl.GetColor(0x00FFFF77))
 		rl.DrawText(fmt.Sprintf("Use arrow keys to move the rectangle!"), 10, 90, 30, rl.GetColor(0x00FFFF77))
-		rl.DrawText(fmt.Sprintf("Speed X : %0.1f\nSpeed Y: %0.1f.", speedX, speedY), 10, 120, 30, rl.GetColor(0x00FFFF77))
+		rl.DrawText(fmt.Sprintf("Speed X : %0.1f\nSpeed Y: %0.1f \nGravity: %0.1f\nGrav: %t", speedX, speedY, gravity, grav), 10, 120, 30, rl.GetColor(0x00FFFF77))
 		rl.DrawFPS(10, 10)
 		
 		rl.EndDrawing()
