@@ -1,8 +1,8 @@
 # ignore the go.mod file
-.go.mod
+go.mod
 
 #ignore the go.sum file
-.go.sum
+go.sum
 
 # ignore the executable files
 main
