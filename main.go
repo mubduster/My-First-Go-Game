@@ -5,7 +5,7 @@ import (
 
 	rl "github.com/gen2brain/raylib-go/raylib"
 )
-
+// CJ
 var speedX float32 = 0
 var speedY float32 = 0
 var shift uint8 = 1
