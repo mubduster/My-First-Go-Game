@@ -8,7 +8,7 @@
   - W A S D to move
   - thats it.
 ### Ps
-  This version is not the final project, and will get changed. Also I have not figured out a way to make a proper executable file for Windows yet, and I am on linux.
+  This version is not the final project, and will get changed.
 
 ## Author
   Me! The author of this porject is [mubduster](https://github.com/mubduster/Go).
