@@ -22,6 +22,7 @@ var B uint8 = 224
 var wallX bool
 var wallY bool
 var grav bool = true
+// var circleGrav bool = true
 var bR uint8 = 0
 var bG uint8 = 0
 var bB uint8 = 0
@@ -35,6 +36,7 @@ var shiftGridDir uint8 = 1
 var maxSpeed float32 = 5000
 var acceleration float32 = 1500
 var drag float32 = 1100
+var circleDrag float32 = 250
 var gravity float32
 var gravityForce float32 = 50
 var maxGravity float32 = 3000
@@ -78,14 +80,14 @@ func main(){
 		
 		dT := rl.GetFrameTime()
 		
-		// drag --------------------------------------------------------------------------------------------------------------------------------------------------
+		// rectangle drag ----------------------------------------------------------------------------------------------------------------------------------------
 		if !rl.IsKeyDown(rl.KeyRight) && !rl.IsKeyDown(rl.KeyLeft) {
 			if speedX > 0 {
 				speedX -= drag * dT
 				if speedX < 0 {
 					speedX = 0
 				}
-				}else if speedX < 0 {
+			}else if speedX < 0 {
 				speedX += drag * dT
 				if speedX > 0 {
 					speedX = 0
@@ -103,6 +105,30 @@ func main(){
 				if speedY > 0 {
 					speedY = 0
 				}
+			}
+		}
+		//---------------------------------------------------------------------------------------------------------------------------------------------------------
+		// circle drag --------------------------------------------------------------------------------------------------------------------------------------------
+		if circleSpeedX > 0 {
+			circleSpeedX -= circleDrag * dT
+			if circleSpeedX < 0 {
+				circleSpeedX = 0
+			}
+		}else if circleSpeedX < 0 {
+			circleSpeedX += circleDrag * dT
+			if circleSpeedX > 0 {
+				circleSpeedX = 0
+			}
+		}
+		if circleSpeedY > 0{
+			circleSpeedY -= circleDrag * dT
+			if circleSpeedY < 0 {
+				circleSpeedY = 0
+			}
+		}else if circleSpeedY < 0 {
+			circleSpeedY += circleDrag * dT
+			if circleSpeedY > 0 {
+				circleSpeedY = 0
 			}
 		}
 		//---------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -159,7 +185,6 @@ func main(){
 			speedY = speedY * -1
 		}
 		//----------------------------------------------------------------------------------------------------------------------------------------------------------
-
 		// border collision circle ---------------------------------------------------------------------------------------------------------------------------------
 		if stageCircle.X + radius > worldWidth {
 			stageCircle.X = worldWidth - radius
@@ -177,7 +202,7 @@ func main(){
 		//----------------------------------------------------------------------------------------------------------------------------------------------------------
 		
 		// gravity rectangle ---------------------------------------------------------------------------------------------------------------------------------------
-		if y+20 <= worldHeight && speedY >= -0.5{
+		if (y+20 <= worldHeight && speedY >= -0.5) && !((x + 300 > stageCircle.X - 10 && x < stageCircle.X + 10) && (y + 200 > stageCircle.Y - radius - 0.4 && y + 200 < stageCircle.Y -radius +0.4)){
 			grav = true
 		}else {
 			grav = false
@@ -195,27 +220,26 @@ func main(){
 			gravity = 0.0
 		}
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------------
-
-		// Doesnt work yet but I will fix it {
 		// gravity circle -------------------------------------------------------------------------------------------------------------------------------------------
-		// if gravityCircle < maxGravity && circleSpeedY < maxSpeed && stageCircle.Y + radius > worldHeight{
-		// 	gravityCircle += gravityForce
-		// 	circleSpeedY += gravityCircle * dT
-		// }else if gravityCircle > (maxGravity-1) && speedY < maxSpeed{
-		// 	circleSpeedY += gravityCircle * dT
-		// }
+		if !((stageCircle.X + radius > x && stageCircle.X - radius < x + 300) && (stageCircle.Y + radius > y - 10 && stageCircle.Y + radius < y + 10)){
+			if gravityCircle < maxGravity && circleSpeedY < maxSpeed && stageCircle.Y + radius > worldHeight - 1 {
+				gravityCircle += gravityForce
+				circleSpeedY += gravityCircle * dT
+			}else if gravityCircle > (maxGravity-1) && speedY < maxSpeed{
+				circleSpeedY += gravityCircle * dT
+			}
+		}
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------------
-		// }
 		
 		// camera setup ---------------------------------------------------------------------------------------------------------------------------------------------
-		boxPos := rl.NewVector2(x,y)
+		boxPos := rl.NewVector2(x + 150 ,y + 100)
 		cameraOffset := rl.NewVector2(screenWidth/2, screenHeight/2)
 		
 		camera := rl.Camera2D{
 			Target: boxPos,
 			Offset: cameraOffset,
 			Rotation: 0.0,
-			Zoom: 1.0,
+			Zoom: 0.8,
 		}
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------------
 		
