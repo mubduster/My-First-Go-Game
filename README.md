@@ -5,7 +5,7 @@
 ## How to play?
   Just install the correct version according to your OS, and start playing.
   ### controls:
-  - W A S D to move
+  - W A S D or Up Left Down Right to move
   - thats it.
 ### Ps
   This version is not the final project, and will get changed.

@@ -71,6 +71,7 @@ func main(){
 	
 	stageCircle := rl.NewVector2(worldWidth/2 , worldHeight - 100)
 	radius := float32(100)
+
 	
 	for !rl.WindowShouldClose() {
 		// screen setup ------------------------------------------------------------------------------------------------------------------------------------------
@@ -79,9 +80,11 @@ func main(){
 		//--------------------------------------------------------------------------------------------------------------------------------------------------------
 		
 		dT := rl.GetFrameTime()
+
+		cursorAreaCircle := rl.GetMousePosition()
 		
 		// rectangle drag ----------------------------------------------------------------------------------------------------------------------------------------
-		if !rl.IsKeyDown(rl.KeyRight) && !rl.IsKeyDown(rl.KeyLeft) {
+		if !(rl.IsKeyDown(rl.KeyRight) || rl.IsKeyDown(rl.KeyD)) && !(rl.IsKeyDown(rl.KeyLeft) || rl.IsKeyDown(rl.KeyA)) {
 			if speedX > 0 {
 				speedX -= drag * dT
 				if speedX < 0 {
@@ -94,7 +97,7 @@ func main(){
 				}
 			}
 		}
-		if !rl.IsKeyDown(rl.KeyUp) && !rl.IsKeyDown(rl.KeyDown) {
+		if !(rl.IsKeyDown(rl.KeyUp) || rl.IsKeyDown(rl.KeyW)) && !(rl.IsKeyDown(rl.KeyDown) || rl.IsKeyDown(rl.KeyS)) {
 			if speedY > 0 && !grav{
 				speedY -= drag * dT
 				if speedY < 0 {
@@ -134,16 +137,16 @@ func main(){
 		//---------------------------------------------------------------------------------------------------------------------------------------------------------
 		
 		// movement controls + max movement speed -----------------------------------------------------------------------------------------------------------------
-		if rl.IsKeyDown(rl.KeyUp) && y > 0 && int32(speedY) >= -int32(maxSpeed){
+		if (rl.IsKeyDown(rl.KeyUp) || rl.IsKeyDown(rl.KeyW)) && y > 0 && int32(speedY) >= -int32(maxSpeed){
 			speedY -= acceleration * dT
 		}
-		if rl.IsKeyDown(rl.KeyDown) && y+200 < worldHeight && int32(speedY) <= int32(maxSpeed){
+		if (rl.IsKeyDown(rl.KeyDown) || rl.IsKeyDown(rl.KeyS)) && y+200 < worldHeight && int32(speedY) <= int32(maxSpeed){
 			speedY += acceleration * dT
 		}
-		if rl.IsKeyDown(rl.KeyRight) && x+300 < worldWidth && int32(speedX) <= int32(maxSpeed){
+		if (rl.IsKeyDown(rl.KeyRight) || rl.IsKeyDown(rl.KeyD)) && x+300 < worldWidth && int32(speedX) <= int32(maxSpeed){
 			speedX += acceleration * dT
 		}
-		if rl.IsKeyDown(rl.KeyLeft) && x > 0 && int32(speedX) >= -int32(maxSpeed){
+		if (rl.IsKeyDown(rl.KeyLeft) || rl.IsKeyDown(rl.KeyA)) && x > 0 && int32(speedX) >= -int32(maxSpeed){
 			speedX -= acceleration * dT
 		}
 		//----------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -323,6 +326,7 @@ func main(){
 		rl.DrawText(fmt.Sprintf("Use arrow keys to move the rectangle!"), 10, 90, 30, rl.GetColor(0x00FFFF77))
 		rl.DrawText(fmt.Sprintf("Speed X : %0.1f\nSpeed Y: %0.1f\nX: %0.1f\nY: %0.1f\nGravity: %0.1f\nGrav: %t:", speedX, speedY, x+150, y+100,gravity, grav), 10, 120, 30, rl.GetColor(0x00FFFF77))
 		rl.DrawFPS(10, 10)
+		rl.DrawCircleV(cursorAreaCircle, 20, rl.GetColor(0xffff0044))
 		//-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 		rl.EndDrawing() // end frame
 		//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
